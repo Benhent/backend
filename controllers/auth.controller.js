@@ -2,6 +2,7 @@ import bcryptjs from "bcryptjs";
 import crypto from "crypto";
 import { User } from "../models/user.model.js";
 import { generateTokenAndSetCookies } from "../utils/generateTokenAndSetCookies.js";
+import cloudinary from "../config/cloudinaryConfig.js";
 import { 
   sendVerificationEmail, 
   sendPasswordResetRequestEmail, 
@@ -10,7 +11,7 @@ import {
 
 export const signup = async (req, res) => {
   try {
-    const { name, username, email, password, link = "", national = "" } = req.body;
+    const { name, username, email, password, link = "", national = "", avatarUrl = "" } = req.body;
 
     // Input validation
     if (!name || !username || !email || !password) {
@@ -66,6 +67,7 @@ export const signup = async (req, res) => {
       password: hashedPassword,
       link,
       national,
+      avatarUrl,
       verificationToken: verificationCode,
       verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
     });
@@ -85,6 +87,7 @@ export const signup = async (req, res) => {
         name: user.name,
         username: user.username,
         email: user.email,
+        avatarUrl: user.avatarUrl,
         role: user.role,
         isVerified: user.isVerified
       }
@@ -539,6 +542,27 @@ export const updateProfile = async (req, res) => {
       }
     }
 
+    // Handle avatar update if file was uploaded
+    if (req.file) {
+      // Xóa avatar cũ trên Cloudinary nếu có và không phải avatar mặc định
+      if (user.avatarUrl && user.avatarUrl.includes('cloudinary.com')) {
+        try {
+          // Trích xuất public_id từ URL
+          const urlParts = user.avatarUrl.split('/');
+          const publicIdWithExtension = urlParts[urlParts.length - 1];
+          const publicId = `avatars/${publicIdWithExtension.split('.')[0]}`;
+          
+          await cloudinary.uploader.destroy(publicId);
+        } catch (error) {
+          console.error('Error deleting old avatar:', error);
+          // Tiếp tục xử lý dù có lỗi khi xóa ảnh cũ
+        }
+      }
+      
+      // Cập nhật URL avatar mới
+      user.avatarUrl = req.file.path;
+    }
+
     // Update user fields
     if (name) user.name = name;
     if (username) user.username = username;
@@ -555,6 +579,7 @@ export const updateProfile = async (req, res) => {
         name: user.name,
         username: user.username,
         email: user.email,
+        avatarUrl: user.avatarUrl,
         link: user.link,
         national: user.national,
         role: user.role

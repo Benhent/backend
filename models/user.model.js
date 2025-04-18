@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import applyAvatar from "../middlewares/generateAvatar.js";
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -18,6 +19,10 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    avatarUrl:{
+        type: String,
+        default: ''
     },
     link: {
         type: String,
@@ -45,5 +50,7 @@ const userSchema = new mongoose.Schema({
     verificationToken: String,
     verificationTokenExpiresAt: Date,
 }, {timestamps: true});
+
+applyAvatar(userSchema);
 
 export const User = mongoose.model("User", userSchema);
