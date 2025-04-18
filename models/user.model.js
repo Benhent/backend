@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import applyAvatar from "../middlewares/generateAvatar.js";
+import {applyAvatar} from "../middlewares/generateAvatar.js";
 
 const userSchema = new mongoose.Schema({
     name: {

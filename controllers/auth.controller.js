@@ -2,7 +2,7 @@ import bcryptjs from "bcryptjs";
 import crypto from "crypto";
 import { User } from "../models/user.model.js";
 import { generateTokenAndSetCookies } from "../utils/generateTokenAndSetCookies.js";
-import cloudinary from "../config/cloudinaryConfig.js";
+import cloudinary from "../service/cloudinary.config.js";
 import { 
   sendVerificationEmail, 
   sendPasswordResetRequestEmail, 
@@ -547,10 +547,10 @@ export const updateProfile = async (req, res) => {
       // Xóa avatar cũ trên Cloudinary nếu có và không phải avatar mặc định
       if (user.avatarUrl && user.avatarUrl.includes('cloudinary.com')) {
         try {
-          // Trích xuất public_id từ URL
+          // Trích xuất public_id từ URL (lưu ý cách này có thể cần điều chỉnh tùy vào URL format)
           const urlParts = user.avatarUrl.split('/');
           const publicIdWithExtension = urlParts[urlParts.length - 1];
-          const publicId = `avatars/${publicIdWithExtension.split('.')[0]}`;
+          const publicId = `avatars/${publicIdWithExtension.split('.')[0]}`; 
           
           await cloudinary.uploader.destroy(publicId);
         } catch (error) {
@@ -560,7 +560,7 @@ export const updateProfile = async (req, res) => {
       }
       
       // Cập nhật URL avatar mới
-      user.avatarUrl = req.file.path;
+      user.avatarUrl = req.file.path; // @fluidjs/multer-cloudinary lưu URL trong req.file.path
     }
 
     // Update user fields

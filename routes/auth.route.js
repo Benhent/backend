@@ -12,7 +12,7 @@ import {
   updateProfile
 } from '../controllers/auth.controller.js';
 import { verifyToken } from '../middlewares/verifyToken.js';
-import { handleUploadErrors } from '../middlewares/uploadImage.js';
+import { handleAvatarUpload } from '../middlewares/uploadImage.js';
 
 const router = express.Router();
 
@@ -29,6 +29,6 @@ router.use(verifyToken); // Apply verifyToken middleware to all routes below
 router.post('/logout', logout);
 router.get('/check', checkAuth);
 router.put('/change-password', changePassword);
-router.put('/profile', handleUploadErrors, updateProfile);
+router.put('/profile', handleAvatarUpload, updateProfile);
 
 export default router;

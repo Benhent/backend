@@ -1,4 +1,3 @@
-
 export const applyAvatar = (schema) => {
   schema.pre('save', function(next) {
     // Chỉ tạo avatar mặc định nếu đây là tài khoản mới được tạo 

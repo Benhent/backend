@@ -1,40 +1,45 @@
 import multer from 'multer';
-import path from 'path';
-import cloudinary from '../config/cloudinaryConfig.js';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import { CloudinaryStorage } from '@fluidjs/multer-cloudinary';
+import cloudinary from '../service/cloudinary.config.js';
 
-// Cấu hình lưu trữ cho Cloudinary
+// Cấu hình Cloudinary Storage
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'avatars', // thư mục lưu ảnh trên Cloudinary
-    allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],
-    transformation: [{ width: 256, height: 256, crop: 'fill' }] // resize và crop ảnh
+    folder: 'avatars',
+    format: async (req, file) => {
+      // Lấy định dạng từ file gốc hoặc chuyển đổi thành định dạng mong muốn
+      const extension = file.mimetype.split('/')[1];
+      return extension === 'jpeg' ? 'jpg' : extension;
+    },
+    public_id: (req, file) => {
+      // Bạn có thể đặt tên file tùy chỉnh ở đây
+      return `user-${req.user._id}-${Date.now()}`;
+    },
+    transformation: [{ width: 256, height: 256, crop: 'fill' }]
   }
 });
 
-// Hàm kiểm tra loại file
+// Kiểm tra loại file
 const fileFilter = (req, file, cb) => {
-  const filetypes = /jpeg|jpg|png|gif/;
-  const mimetype = filetypes.test(file.mimetype);
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-
-  if (mimetype && extname) {
-    return cb(null, true);
+  // Chỉ chấp nhận các loại hình ảnh
+  if (file.mimetype.startsWith('image/')) {
+    cb(null, true);
+  } else {
+    cb(new Error('Not an image! Please upload only images.'), false);
   }
-  cb(new Error('Invalid file type. Only JPEG, JPG, PNG and GIF files are allowed.'), false);
 };
 
 // Khởi tạo middleware multer
-export const uploadAvatar = multer({
+const upload = multer({
   storage: storage,
-  limits: { fileSize: 1024 * 1024 * 2 }, // giới hạn 2MB
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
   fileFilter: fileFilter
-}).single('avatar'); // 'avatar' là tên trường form-data
+}).single('avatar');
 
-// Middleware xử lý lỗi upload
-export const handleUploadErrors = (req, res, next) => {
-  uploadAvatar(req, res, function (err) {
+// Middleware xử lý upload
+export const handleAvatarUpload = (req, res, next) => {
+  upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       // Lỗi multer
       return res.status(400).json({
@@ -48,6 +53,7 @@ export const handleUploadErrors = (req, res, next) => {
         message: err.message
       });
     }
+    
     // Không có lỗi, tiếp tục
     next();
   });
