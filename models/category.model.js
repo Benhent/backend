@@ -35,7 +35,6 @@ const categorySchema = new mongoose.Schema(
     },
     createdBy: {
       type: String,
-      default: null, // người tạo
     },
     deleted: {
       type: Boolean,

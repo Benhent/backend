@@ -61,21 +61,20 @@ export const getById = async (req, res) => {
 // [POST] /api/category/create
 export const create = async (req, res) => {
   try {
-    // Kiểm tra xem có ID người dùng (được lưu trong req.userId) hay không
-    if (!req.userId) {
+    const userId = req.cookies.user_id;
+
+    if (!userId) {
       return res.status(401).json({
         code: 401,
-        message: "Unauthorized: User not found"
+        message: "Unauthorized: User not found",
       });
     }
 
-    // Thêm ID người tạo vào createBy
     const create = new Category({
-      ...req.body,  // Giữ nguyên các trường dữ liệu khác
-      createdBy: req.userId, // Thêm createdBy từ userId
+      ...req.body,
+      createdBy: userId,
     });
 
-    // Lưu mới category
     const result = await create.save();
 
     res.json({
@@ -85,9 +84,10 @@ export const create = async (req, res) => {
     });
   } catch (error) {
     console.error("Error in creating category:", error);
-    res.json({
+    res.status(400).json({
       code: 400,
       message: "Thêm mới thất bại!",
+      error: error.message,
     });
   }
 };

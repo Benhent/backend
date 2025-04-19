@@ -243,7 +243,7 @@ export const login = async (req, res) => {
 
     // Generate token and set cookie
     generateTokenAndSetCookies(res, user._id);
-
+        
     // Update last login timestamp
     user.lastLogin = new Date();
     await user.save();

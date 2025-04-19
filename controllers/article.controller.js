@@ -1,4 +1,4 @@
-import { Article } from "../models/article.model.js";  // Sửa lại để sử dụng named import
+import { Article } from "../models/article.model.js"; // Sửa lại để sử dụng named import
 import paginationHelper from "../helpers/pagination.helper.js"; // Import pagination helper
 import searchHelper from "../helpers/search.helper.js"; // Import search helper
 
@@ -64,7 +64,20 @@ export const getById = async (req, res) => {
 // [POST] /api/article/create
 export const create = async (req, res) => {
   try {
-    const create = new Article(req.body);
+    const userId = req.cookies.user_id;
+
+    if (!userId) {
+      return res.status(401).json({
+        code: 401,
+        message: "Unauthorized: User not found",
+      });
+    }
+
+    const create = new Article({
+      ...req.body,
+      authors: userId,
+    });
+
     const result = await create.save();
 
     res.json({
@@ -73,9 +86,11 @@ export const create = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    res.json({
+    console.error("Error in creating category:", error);
+    res.status(400).json({
       code: 400,
       message: "Thêm mới thất bại!",
+      error: error.message,
     });
   }
 };
