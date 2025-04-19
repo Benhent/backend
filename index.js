@@ -7,13 +7,16 @@ import { connectDB } from "./db/connectDB.js";
 
 import authRoutes from "./routes/auth.route.js"
 
+import route from "./routes/index.route.js";
+
 dotenv.config();
+
 
 const app = express();
 const PORT = process.env.PORT;
 
 app.use(cors({
-    origin: process.env.CLIENT_URL,
+    origin: "*",
     credentials: true
 }))
 
@@ -31,6 +34,8 @@ app.use(session({
 }));
 
 app.use("/api/auth", authRoutes)
+route(app);
+
 
 app.listen(PORT, () => {
     connectDB();
