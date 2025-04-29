@@ -1,7 +1,7 @@
 import ArticleAuthor from '../models/articles/articleAuthor.model.js';
 import User from '../models/users/user.model.js';
 
-export const createArticleAuthor = async (req, res, next) => {
+export const createArticleAuthor = async (req, res) => {
   try {
     const {
       userId,
@@ -55,7 +55,7 @@ export const createArticleAuthor = async (req, res, next) => {
   }
 };
 
-export const getAllArticleAuthors = async (req, res, next) => {
+export const getAllArticleAuthors = async (req, res) => {
   try {
     const { hasAccount, isCorresponding } = req.query;
     const filter = {};
@@ -80,7 +80,7 @@ export const getAllArticleAuthors = async (req, res, next) => {
   }
 };
 
-export const getArticleAuthor = async (req, res, next) => {
+export const getArticleAuthor = async (req, res) => {
   try {
     const articleAuthor = await ArticleAuthor.findById(req.params.id)
       .populate('userId', 'name email');
@@ -105,7 +105,7 @@ export const getArticleAuthor = async (req, res, next) => {
   }
 };
 
-export const updateArticleAuthor = async (req, res, next) => {
+export const updateArticleAuthor = async (req, res) => {
   try {
     const { userId } = req.body;
     
@@ -146,7 +146,7 @@ export const updateArticleAuthor = async (req, res, next) => {
   }
 };
 
-export const deleteArticleAuthor = async (req, res, next) => {
+export const deleteArticleAuthor = async (req, res) => {
   try {
     const articleAuthor = await ArticleAuthor.findById(req.params.id);
 
@@ -172,7 +172,7 @@ export const deleteArticleAuthor = async (req, res, next) => {
   }
 };
 
-export const getArticleAuthorsByArticle = async (req, res, next) => {
+export const getArticleAuthorsByArticle = async (req, res) => {
   try {
     // This function assumes there's a relationship between articles and authors
     // You may need to adjust this based on your actual data model
