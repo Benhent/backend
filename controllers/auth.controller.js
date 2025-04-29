@@ -2,7 +2,6 @@ import bcryptjs from "bcryptjs";
 import crypto from "crypto";
 import { User } from "../models/user.model.js";
 import { generateTokenAndSetCookies } from "../utils/generateTokenAndSetCookies.js";
-import cloudinary from "../service/cloudinary.config.js";
 import { 
   sendVerificationEmail, 
   sendPasswordResetRequestEmail, 
@@ -511,85 +510,6 @@ export const changePassword = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Server error while changing password"
-    });
-  }
-};
-
-export const updateProfile = async (req, res) => {
-  try {
-    const { name, username, link, national } = req.body;
-    const userId = req.user._id;
-
-    // Find user
-    const user = await User.findById(userId);
-    
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found"
-      });
-    }
-
-    // Check if username is being changed and if it's already taken
-    if (username && username !== user.username) {
-      const existingUser = await User.findOne({ username });
-      
-      if (existingUser) {
-        return res.status(400).json({
-          success: false,
-          message: "Username already taken"
-        });
-      }
-    }
-
-    // Handle avatar update if file was uploaded
-    if (req.file) {
-      // Xóa avatar cũ trên Cloudinary nếu có và không phải avatar mặc định
-      if (user.avatarUrl && user.avatarUrl.includes('cloudinary.com')) {
-        try {
-          // Trích xuất public_id từ URL (lưu ý cách này có thể cần điều chỉnh tùy vào URL format)
-          const urlParts = user.avatarUrl.split('/');
-          const publicIdWithExtension = urlParts[urlParts.length - 1];
-          const publicId = `avatars/${publicIdWithExtension.split('.')[0]}`; 
-          
-          await cloudinary.uploader.destroy(publicId);
-        } catch (error) {
-          console.error('Error deleting old avatar:', error);
-          // Tiếp tục xử lý dù có lỗi khi xóa ảnh cũ
-        }
-      }
-      
-      // Cập nhật URL avatar mới
-      user.avatarUrl = req.file.path; // @fluidjs/multer-cloudinary lưu URL trong req.file.path
-    }
-
-    // Update user fields
-    if (name) user.name = name;
-    if (username) user.username = username;
-    if (link) user.link = link;
-    if (national) user.national = national;
-
-    await user.save();
-
-    res.status(200).json({
-      success: true,
-      message: "Profile updated successfully",
-      user: {
-        _id: user._id,
-        name: user.name,
-        username: user.username,
-        email: user.email,
-        avatarUrl: user.avatarUrl,
-        link: user.link,
-        national: user.national,
-        role: user.role
-      }
-    });
-  } catch (error) {
-    console.error("Error in updateProfile:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error while updating profile"
     });
   }
 };

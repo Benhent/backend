@@ -4,8 +4,15 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import session from 'express-session';
 import { connectDB } from "./db/connectDB.js";
+import { setupGlobalErrorHandlers } from "./utils/errorHandler.js";
+import { errorMiddleware, notFound } from "./middlewares/errorMiddleware.js";
 
 import authRoutes from "./routes/auth.route.js"
+import profileRoutes from "./routes/profile.route.js";
+import articleFileRoutes from "./routes/articlesRoutes/articleFile.routes.js";
+import reviewRoutes from "./routes/review.routes.js";
+import articleAuthorRoutes from "./routes/articleAuthor.routes.js";
+import statusHistoryRoutes from "./routes/statusHistory.routes.js";
 
 dotenv.config();
 
@@ -30,7 +37,20 @@ app.use(session({
     }
 }));
 
+// Routes
 app.use("/api/auth", authRoutes)
+app.use("/api/profile", profileRoutes)
+app.use("/api/files", articleFileRoutes)
+app.use("/api/reviews", reviewRoutes)
+app.use("/api/article-authors", articleAuthorRoutes)
+app.use("/api/status-history", statusHistoryRoutes)
+
+// Error handling
+app.use(notFound);
+app.use(errorMiddleware);
+
+// Setup global error handlers
+setupGlobalErrorHandlers();
 
 app.listen(PORT, () => {
     connectDB();
