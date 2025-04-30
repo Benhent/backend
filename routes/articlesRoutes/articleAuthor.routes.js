@@ -7,8 +7,8 @@ import {
   deleteArticleAuthor,
   getArticleAuthorsByArticle
 } from '../../controllers/articleAuthor.controller.js';
-import verifyToken from '../../middlewares/verifyToken.js';
-import { authorizeRoles } from '../../middlewares/isAdmin.js';
+import {verifyToken} from '../../middlewares/verifyToken.js';
+import {authorizeRoles} from '../../middlewares/isAdmin.js';
 
 const router = express.Router();
 

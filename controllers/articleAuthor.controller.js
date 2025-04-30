@@ -1,5 +1,5 @@
 import ArticleAuthor from '../models/articles/articleAuthor.model.js';
-import User from '../models/users/user.model.js';
+import User from '../models/user.model.js';
 import Article from '../models/articles/article.model.js';
 
 export const createArticleAuthor = async (req, res) => {
