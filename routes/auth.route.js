@@ -10,7 +10,7 @@ import {
   checkAuth,
   changePassword
 } from '../controllers/auth.controller.js';
-import { verifyToken } from '../middlewares/verifyToken.js';
+import {verifyToken} from '../middlewares/verifyToken.js';
 
 const router = express.Router();
 
