@@ -1,11 +1,6 @@
-# Backend API Documentation
-
-<!-- Logo dự án -->
 <p align="center">
   <img src="https://raw.githubusercontent.com/YourUser/YourRepo/main/assets/logo.png" alt="Project Logo" width="120"/>
 </p>
-
-<!-- Badges -->
 <p align="center">
   <a href="https://github.com/YourUser/YourRepo/actions">
     <img src="https://img.shields.io/github/actions/workflow/status/YourUser/YourRepo/ci.yml?branch=main" alt="CI Status"/>
@@ -21,8 +16,29 @@
   </a>
 </p>
 
+# 🧠Backend API Documentation
+
 ## Giới thiệu
-Backend API được xây dựng bằng Node.js và Express, sử dụng MongoDB làm cơ sở dữ liệu. API cung cấp các chức năng quản lý bài báo khoa học, tác giả, phản biện và quy trình xuất bản.
+>Backend API được xây dựng bằng Node.js và Express, sử dụng MongoDB làm cơ sở dữ liệu. API cung cấp các chức năng quản lý bài báo khoa học, tác giả, phản biện và quy trình xuất bản.
+
+## 🏛️ Kiến trúc hệ thống
+
+![Architecture Diagram](https://raw.githubusercontent.com/YourUser/YourRepo/main/assets/architecture.svg)
+
+```mermaid
+flowchart LR
+  subgraph Client
+    Browser -->|HTTP| API_Gateway
+  end
+  subgraph Server
+    API_Gateway --> AuthService
+    API_Gateway --> ArticleService
+    API_Gateway --> ReviewService
+    AuthService --> MongoDB[(MongoDB)]
+    ArticleService --> MongoDB
+    ReviewService --> MongoDB
+  end
+```
 
 ## Yêu cầu hệ thống
 - Node.js (v14 trở lên)
