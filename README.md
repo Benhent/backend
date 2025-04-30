@@ -1,54 +1,21 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/YourUser/YourRepo/main/assets/logo.png" alt="Project Logo" width="120"/>
-</p>
-<p align="center">
-  <a href="https://github.com/YourUser/YourRepo/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/YourUser/YourRepo/ci.yml?branch=main" alt="CI Status"/>
-  </a>
-  <a href="https://coveralls.io/github/YourUser/YourRepo?branch=main">
-    <img src="https://img.shields.io/coveralls/github/YourUser/YourRepo/main" alt="Coverage Status"/>
-  </a>
-  <a href="https://www.npmjs.com/package/your-package">
-    <img src="https://img.shields.io/npm/v/your-package" alt="NPM Version"/>
-  </a>
-  <a href="https://github.com/YourUser/YourRepo/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/YourUser/YourRepo" alt="License"/>
-  </a>
-</p>
-
 # 🧠Backend API Documentation
 
-## Giới thiệu
+![Node.js](https://img.shields.io/badge/Node.js-v14%2B-green?logo=node.js)
+![Express](https://img.shields.io/badge/Express-Framework-blue?logo=express)
+![MongoDB](https://img.shields.io/badge/MongoDB-v4.4%2B-brightgreen?logo=mongodb)
+
+## 🚀 Giới thiệu
 >Backend API được xây dựng bằng Node.js và Express, sử dụng MongoDB làm cơ sở dữ liệu. API cung cấp các chức năng quản lý bài báo khoa học, tác giả, phản biện và quy trình xuất bản.
 
-## 🏛️ Kiến trúc hệ thống
-
-![Architecture Diagram](https://raw.githubusercontent.com/YourUser/YourRepo/main/assets/architecture.svg)
-
-```mermaid
-flowchart LR
-  subgraph Client
-    Browser -->|HTTP| API_Gateway
-  end
-  subgraph Server
-    API_Gateway --> AuthService
-    API_Gateway --> ArticleService
-    API_Gateway --> ReviewService
-    AuthService --> MongoDB[(MongoDB)]
-    ArticleService --> MongoDB
-    ReviewService --> MongoDB
-  end
-```
-
-## Yêu cầu hệ thống
+## 📦 Yêu cầu hệ thống
 - Node.js (v14 trở lên)
 - MongoDB (v4.4 trở lên)
 - npm hoặc yarn
 
-## Cài đặt
+## ⚙️ Cài đặt
 1. Clone repository
 ```bash
-git clone [repository-url]
+git clone https://github.com/Benhent/backend.git
 cd backend
 ```
 
@@ -71,37 +38,37 @@ npm run dev
 yarn dev
 ```
 
-## Cấu trúc thư mục
+## 📁 Cấu trúc thư mục
 ```
 backend/
-├── config/           # Cấu hình ứng dụng
 ├── controllers/      # Xử lý logic nghiệp vụ
+├── db/               # kết nối mongodb
+├── mail/            # cấu hình mail
 ├── middlewares/      # Middleware xác thực và phân quyền
 ├── models/          # Schema và model MongoDB
 ├── routes/          # Định nghĩa routes
 ├── utils/           # Tiện ích và helper functions
 ├── .env             # Biến môi trường
-├── .env.example     # Mẫu biến môi trường
-└── server.js        # Điểm khởi đầu ứng dụng
+└── index.js        # Điểm khởi đầu ứng dụng
 ```
 
-## API Endpoints
+## 🔗 API Endpoints
 
-### Quản lý bài báo
+### 📄 Quản lý bài báo
 - `GET /api/articles` - Lấy danh sách bài báo
 - `POST /api/articles` - Tạo bài báo mới
 - `GET /api/articles/:id` - Lấy chi tiết bài báo
 - `PUT /api/articles/:id` - Cập nhật bài báo
 - `DELETE /api/articles/:id` - Xóa bài báo
 
-### Quản lý tác giả
+### 🧑‍💼 Quản lý tác giả
 - `GET /api/article-authors` - Lấy danh sách tác giả
 - `POST /api/article-authors` - Tạo tác giả mới
 - `GET /api/article-authors/:id` - Lấy chi tiết tác giả
 - `PUT /api/article-authors/:id` - Cập nhật tác giả
 - `DELETE /api/article-authors/:id` - Xóa tác giả
 
-### Quản lý phản biện
+### 🧾 Quản lý phản biện
 - `GET /api/reviews` - Lấy danh sách phản biện
 - `POST /api/reviews` - Mời một phản biện
 - `POST /api/reviews/multiple` - Mời nhiều phản biện cùng lúc
@@ -115,14 +82,14 @@ backend/
 - `POST /api/reviews/:id/complete` - Hoàn thành phản biện
 - `POST /api/reviews/:id/reminder` - Gửi nhắc nhở phản biện
 
-## Xác thực và Phân quyền
+## 🔐 Xác thực và Phân quyền
 API sử dụng JWT (JSON Web Token) để xác thực. Các role được hỗ trợ:
 - `admin`: Quản trị viên hệ thống
 - `editor`: Biên tập viên
 - `reviewer`: Phản biện
 - `author`: Tác giả
 
-## Các tính năng chính
+## 🌟Các tính năng chính
 1. Quản lý bài báo khoa học
    - Tạo và quản lý bài báo
    - Theo dõi trạng thái bài báo
@@ -143,13 +110,13 @@ API sử dụng JWT (JSON Web Token) để xác thực. Các role được hỗ 
    - Xử lý yêu cầu sửa đổi
    - Xuất bản bài báo
 
-## Bảo mật
+## 🔒 Bảo mật
 - Xác thực JWT
 - Phân quyền chi tiết
 - Bảo vệ API endpoints
 - Mã hóa dữ liệu nhạy cảm
 
-## Phát triển
+## 🧪Phát triển
 1. Fork repository
 2. Tạo branch mới (`git checkout -b feature/amazing-feature`)
 3. Commit changes (`git commit -m 'Add some amazing feature'`)
