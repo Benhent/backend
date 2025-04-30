@@ -85,18 +85,6 @@ API sử dụng JWT (JSON Web Token) để xác thực. Các role được hỗ 
 - `reviewer`: Phản biện
 - `author`: Tác giả
 
-## Biến môi trường
-```env
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/journal
-JWT_SECRET=your_jwt_secret
-JWT_EXPIRE=30d
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your_email@gmail.com
-SMTP_PASS=your_email_password
-```
-
 ## Các tính năng chính
 1. Quản lý bài báo khoa học
    - Tạo và quản lý bài báo
