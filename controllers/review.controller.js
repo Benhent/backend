@@ -364,4 +364,73 @@ export const sendReminder = async (req, res) => {
       message: "Server error while sending reminder"
     });
   }
+};
+
+export const createMultipleReviews = async (req, res) => {
+  try {
+    const { articleId, reviewers } = req.body;
+
+    // Kiểm tra bài báo tồn tại
+    const article = await Article.findById(articleId);
+    if (!article) {
+      return res.status(404).json({
+        success: false,
+        message: 'Bài báo không tồn tại'
+      });
+    }
+
+    // Kiểm tra danh sách reviewers
+    if (!Array.isArray(reviewers) || reviewers.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Danh sách phản biện không hợp lệ'
+      });
+    }
+
+    // Kiểm tra từng reviewer
+    const reviewerPromises = reviewers.map(async (reviewer) => {
+      const { reviewerId, responseDeadline, reviewDeadline } = reviewer;
+
+      // Kiểm tra reviewer tồn tại
+      const user = await User.findById(reviewerId);
+      if (!user) {
+        throw new Error(`Phản biện với ID ${reviewerId} không tồn tại`);
+      }
+
+      // Kiểm tra reviewer đã được mời chưa
+      const existingReview = await Review.findOne({ articleId, reviewerId });
+      if (existingReview) {
+        throw new Error(`Phản biện ${user.name} đã được mời cho bài báo này`);
+      }
+
+      return {
+        articleId,
+        reviewerId,
+        responseDeadline,
+        reviewDeadline,
+        status: 'invited',
+        round: article.currentRound
+      };
+    });
+
+    // Tạo các review mới
+    const reviewData = await Promise.all(reviewerPromises);
+    const reviews = await Review.insertMany(reviewData);
+
+    // Cập nhật số lượt mời phản biện của bài báo
+    article.reviewInvitationCount = (article.reviewInvitationCount || 0) + reviews.length;
+    await article.save();
+
+    res.status(201).json({
+      success: true,
+      message: `Mời ${reviews.length} phản biện thành công`,
+      data: reviews
+    });
+  } catch (error) {
+    console.error('Error creating multiple reviews:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Lỗi khi mời phản biện'
+    });
+  }
 }; 
