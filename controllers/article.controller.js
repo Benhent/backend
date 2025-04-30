@@ -1,4 +1,4 @@
-import { Article from '../models/articles/article.model.js';
+import { Article } from '../models/articles/article.model.js';
 import { ArticleFile } from '../models/articles/articleFile.model.js';
 import { ArticleAuthor } from '../models/articles/articleAuthor.model.js';
 
