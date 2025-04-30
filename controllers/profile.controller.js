@@ -1,5 +1,6 @@
 import { User } from "../models/user.model.js";
 
+
 export const getProfileById = async (req, res) => {
     try {
       // Find user by ID
