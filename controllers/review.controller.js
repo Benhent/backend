@@ -1,6 +1,6 @@
 import Review from '../models/articles/review.model.js';
 import Article from '../models/articles/article.model.js';
-import User from '../models/users/user.model.js';
+import User from '../models/user.model.js';
 // import { sendEmail } from '../mail/emailService.js';
 
 export const createReview = async (req, res) => {
