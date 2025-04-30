@@ -11,8 +11,8 @@ import profileRoutes from "./routes/profile.route.js";
 import articleRoutes from "./routes/articlesRoutes/article.routes.js";
 import articleAuthorRoutes from "./routes/articlesRoutes/articleAuthor.routes.js";
 import articleFileRoutes from "./routes/articlesRoutes/articleFile.routes.js";
-import reviewRoutes from "./routes/review.routes.js";
-import statusHistoryRoutes from "./routes/statusHistory.routes.js";
+import reviewRoutes from "./routes/articlesRoutes/review.routes.js";
+import statusHistoryRoutes from "./routes/articlesRoutes/statusHistory.routes.js";
 
 dotenv.config();
 

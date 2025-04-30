@@ -7,8 +7,8 @@ import {
   deleteStatusHistory,
   getStatusHistoryByArticle
 } from '../../controllers/statusHistory.controller.js';
-import verifyToken from '../../middlewares/verifyToken.js';
-import { authorizeRoles } from '../../middlewares/isAdmin.js';
+import {verifyToken} from '../../middlewares/verifyToken.js';
+import {authorizeRoles} from '../../middlewares/isAdmin.js';
 
 const router = express.Router();
 
