@@ -118,10 +118,3 @@ API sử dụng JWT (JSON Web Token) để xác thực. Các role được hỗ 
 3. Commit changes (`git commit -m 'Add some amazing feature'`)
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Tạo Pull Request
-
-## Liên hệ
-- Email: [your-email@example.com]
-- Website: [your-website.com]
-
-## Giấy phép
-[MIT License](LICENSE) 
