@@ -1,6 +1,6 @@
 import mongoose, {Schema} from 'mongoose';
-import {ArticleAuthor} from './articleAuthor.model.js';
-import {StatusHistory} from './statusHistory.model.js';
+// import {ArticleAuthor} from './articleAuthor.model.js';
+// import {StatusHistory} from './statusHistory.model.js';
 
 // Schema chính cho bài báo
 const ArticleSchema = new mongoose.Schema({
@@ -234,4 +234,4 @@ ArticleSchema.methods.isAuthor = function(userId) {
   return false;
 };
 
-export const Article = mongoose.model('Article', ArticleSchema);
+export const Article = mongoose.model("Article", ArticleSchema);
