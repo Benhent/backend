@@ -1,9 +1,11 @@
 import ArticleAuthor from '../models/articles/articleAuthor.model.js';
 import User from '../models/users/user.model.js';
+import Article from '../models/articles/article.model.js';
 
 export const createArticleAuthor = async (req, res) => {
   try {
     const {
+      articleId,
       userId,
       hasAccount,
       fullName,
@@ -15,19 +17,29 @@ export const createArticleAuthor = async (req, res) => {
       orcid
     } = req.body;
 
+    // Kiểm tra article tồn tại
+    const article = await Article.findById(articleId);
+    if (!article) {
+      return res.status(404).json({
+        success: false,
+        message: 'Bài báo không tồn tại'
+      });
+    }
+
     // If hasAccount is true, check if user exists
     if (hasAccount && userId) {
       const user = await User.findById(userId);
       if (!user) {
         return res.status(404).json({
           success: false,
-          message: 'User not found'
+          message: 'Người dùng không tồn tại'
         });
       }
     }
 
     // Create new article author
     const articleAuthor = new ArticleAuthor({
+      articleId,
       userId,
       hasAccount,
       fullName,
@@ -41,6 +53,10 @@ export const createArticleAuthor = async (req, res) => {
 
     await articleAuthor.save();
 
+    // Cập nhật danh sách tác giả của bài báo
+    article.authors.push(articleAuthor._id);
+    await article.save();
+
     res.status(201).json({
       success: true,
       message: 'Tạo tác giả bài báo thành công',
@@ -50,7 +66,7 @@ export const createArticleAuthor = async (req, res) => {
     console.log("Failed to create article author", error);
     res.status(500).json({
       success: false,
-      message: 'Failed to create article author'
+      message: 'Lỗi khi tạo tác giả bài báo'
     });
   }
 };

@@ -1,6 +1,7 @@
 // controllers/article.controller.js
 import { Article } from '../models/articles/article.model.js';
 import { ArticleFile } from '../models/articles/articleFile.model.js';
+import { ArticleAuthor } from '../models/articles/articleAuthor.model.js';
 
 // Lấy danh sách bài báo với phân trang và lọc
 export const getArticles = async (req, res) => {
@@ -110,7 +111,6 @@ export const createArticle = async (req, res) => {
       otherLanguage,
       field,
       secondaryFields: secondaryFields || [],
-      authors: JSON.parse(authors),
       submitterId,
       submitterNote,
       status: 'draft',
@@ -122,6 +122,30 @@ export const createArticle = async (req, res) => {
     });
     
     await article.save();
+
+    // Xử lý tác giả
+    if (authors && Array.isArray(authors)) {
+      const authorPromises = authors.map(async (authorData, index) => {
+        const articleAuthor = new ArticleAuthor({
+          articleId: article._id,
+          userId: authorData.userId,
+          hasAccount: !!authorData.userId,
+          fullName: authorData.fullName,
+          email: authorData.email,
+          institution: authorData.institution,
+          country: authorData.country,
+          isCorresponding: authorData.isCorresponding,
+          order: index + 1,
+          orcid: authorData.orcid
+        });
+        await articleAuthor.save();
+        return articleAuthor._id;
+      });
+
+      const authorIds = await Promise.all(authorPromises);
+      article.authors = authorIds;
+      await article.save();
+    }
     
     res.status(201).json({ 
       success: true, 
