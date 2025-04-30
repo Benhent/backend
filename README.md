@@ -1,5 +1,26 @@
 # Backend API Documentation
 
+<!-- Logo dự án -->
+<p align="center">
+  <img src="https://raw.githubusercontent.com/YourUser/YourRepo/main/assets/logo.png" alt="Project Logo" width="120"/>
+</p>
+
+<!-- Badges -->
+<p align="center">
+  <a href="https://github.com/YourUser/YourRepo/actions">
+    <img src="https://img.shields.io/github/actions/workflow/status/YourUser/YourRepo/ci.yml?branch=main" alt="CI Status"/>
+  </a>
+  <a href="https://coveralls.io/github/YourUser/YourRepo?branch=main">
+    <img src="https://img.shields.io/coveralls/github/YourUser/YourRepo/main" alt="Coverage Status"/>
+  </a>
+  <a href="https://www.npmjs.com/package/your-package">
+    <img src="https://img.shields.io/npm/v/your-package" alt="NPM Version"/>
+  </a>
+  <a href="https://github.com/YourUser/YourRepo/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/YourUser/YourRepo" alt="License"/>
+  </a>
+</p>
+
 ## Giới thiệu
 Backend API được xây dựng bằng Node.js và Express, sử dụng MongoDB làm cơ sở dữ liệu. API cung cấp các chức năng quản lý bài báo khoa học, tác giả, phản biện và quy trình xuất bản.
 
