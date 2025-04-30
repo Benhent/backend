@@ -6,23 +6,16 @@ import {
   updateFileStatus,
   getArticleFileContent
 } from "../../controllers/articleFile.controller.js";
-import { verifyToken } from "../../middlewares/verifyToken.js";
+import verifyToken from "../../middlewares/verifyToken.js";
+import { authorizeRoles } from "../../middlewares/isAdmin.js";
 
 const router = express.Router();
 
-// Upload file cho bài báo - nhận URL từ Cloudinary đã được upload từ frontend
+// Protected routes
 router.post("/:articleId", verifyToken, uploadArticleFile);
-
-// Lấy danh sách file của bài báo
 router.get("/:articleId", verifyToken, getArticleFiles);
-
-// Xóa file bài báo
-router.delete("/:fileId", verifyToken, deleteArticleFile);
-
-// Cập nhật trạng thái file
-router.patch("/:fileId/status", verifyToken, updateFileStatus);
-
-// Lấy nội dung file (trả về URL để frontend tải về)
+router.delete("/:fileId", verifyToken, authorizeRoles('admin', 'editor', 'author'), deleteArticleFile);
+router.patch("/:fileId/status", verifyToken, authorizeRoles('admin', 'editor', 'author'), updateFileStatus);
 router.get("/:fileId/content", verifyToken, getArticleFileContent);
 
 export default router;
