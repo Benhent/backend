@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, {Schema} from 'mongoose';
 
 const ReviewAttachmentSchema = new mongoose.Schema({
   fileName: {
@@ -147,4 +147,4 @@ ReviewSchema.methods.sendReminder = function() {
   return this.save();
 };
 
-export default mongoose.model('Review', ReviewSchema);
+export const Review = mongoose.model('Review', ReviewSchema);

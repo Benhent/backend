@@ -234,4 +234,4 @@ ArticleSchema.methods.isAuthor = function(userId) {
   return false;
 };
 
-export const Article = mongoose.model("Article", ArticleSchema);
+export const Article = mongoose.model('Article', ArticleSchema);

@@ -1,5 +1,5 @@
-import StatusHistory from '../models/articles/statusHistory.model.js';
-import User from '../models/user.model.js';
+import {StatusHistory} from '../models/articles/statusHistory.model.js';
+import {User} from '../models/user.model.js';
 
 export const createStatusHistory = async (req, res) => {
   try {
