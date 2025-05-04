@@ -13,7 +13,7 @@ import articleAuthorRoutes from "./routes/articlesRoutes/articleAuthor.routes.js
 import articleFileRoutes from "./routes/articlesRoutes/articleFile.routes.js";
 import reviewRoutes from "./routes/articlesRoutes/review.routes.js";
 import statusHistoryRoutes from "./routes/articlesRoutes/statusHistory.routes.js";
-
+import fieldRoutes from "./routes/articlesRoutes/field.route.js";
 dotenv.config();
 
 const app = express();
@@ -46,6 +46,7 @@ app.use("/api/article-authors", articleAuthorRoutes)
 app.use("/api/files", articleFileRoutes)
 app.use("/api/reviews", reviewRoutes)
 app.use("/api/status-history", statusHistoryRoutes)
+app.use("/api/fields", fieldRoutes)
 
 app.listen(PORT, () => {
     connectDB();
