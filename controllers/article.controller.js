@@ -1,6 +1,7 @@
-import { Article } from '../models/articles/article.model.js';
-import { ArticleFile } from '../models/articles/articleFile.model.js';
 import { ArticleAuthor } from '../models/articles/articleAuthor.model.js';
+import { ArticleFile } from '../models/articles/articleFile.model.js';
+import { StatusHistory } from '../models/articles/statusHistory.model.js';
+import { Article } from '../models/articles/article.model.js';
 
 // Lấy danh sách bài báo với phân trang và lọc
 export const getArticles = async (req, res) => {
@@ -88,7 +89,7 @@ export const createArticle = async (req, res) => {
       subtitle,
       abstract,
       keywords,
-      language,
+      articleLanguage,
       otherLanguage,
       field,
       secondaryFields,
@@ -99,6 +100,15 @@ export const createArticle = async (req, res) => {
     // Lấy submitterId từ user đã xác thực
     const submitterId = req.user._id;
     
+    const initialStatus = new StatusHistory({
+      status: 'draft',
+      changedBy: submitterId,
+      timestamp: new Date(),
+      reason: 'Tạo bài báo mới'
+    });
+
+    await initialStatus.save();
+
     // Tạo bài báo mới
     const article = new Article({
       titlePrefix,
@@ -106,18 +116,14 @@ export const createArticle = async (req, res) => {
       subtitle,
       abstract,
       keywords: Array.isArray(keywords) ? keywords : keywords.split(',').map(k => k.trim()),
-      language,
+      articleLanguage,
       otherLanguage,
       field,
       secondaryFields: secondaryFields || [],
       submitterId,
       submitterNote,
       status: 'draft',
-      statusHistory: [{
-        status: 'draft',
-        changedBy: submitterId,
-        timestamp: new Date()
-      }]
+      statusHistory: [initialStatus._id]
     });
     
     await article.save();
@@ -127,7 +133,7 @@ export const createArticle = async (req, res) => {
       const authorPromises = authors.map(async (authorData, index) => {
         const articleAuthor = new ArticleAuthor({
           articleId: article._id,
-          userId: authorData.userId,
+          userId: authorData.userId || null,
           hasAccount: !!authorData.userId,
           fullName: authorData.fullName,
           email: authorData.email,
@@ -135,7 +141,7 @@ export const createArticle = async (req, res) => {
           country: authorData.country,
           isCorresponding: authorData.isCorresponding,
           order: index + 1,
-          orcid: authorData.orcid
+          orcid: authorData.orcid || null
         });
         await articleAuthor.save();
         return articleAuthor._id;
@@ -146,10 +152,16 @@ export const createArticle = async (req, res) => {
       await article.save();
     }
     
+    const populatedArticle = await Article.findById(article._id)
+      .populate('statusHistory')
+      .populate('authors')
+      .populate('field')
+      .populate('secondaryFields');
+
     res.status(201).json({ 
       success: true, 
       message: 'Tạo bài báo mới thành công', 
-      data: article 
+      data: populatedArticle 
     });
   } catch (error) {
     console.error('Error creating article:', error);
@@ -176,7 +188,7 @@ export const updateArticle = async (req, res) => {
       updateData.authors = JSON.parse(updateData.authors);
     }
     
-    const article = await Article.findById(id);
+    const article = await Article.findById(id).populate('authors');
     
     if (!article) {
       return res.status(404).json({ success: false, message: 'Không tìm thấy bài báo' });
@@ -314,12 +326,12 @@ export const assignEditor = async (req, res) => {
     await article.save();
     
     // Thêm ghi chú nội bộ về việc chỉ định
-    article.internalNotes.push({
-      userId: req.user._id,
-      note: `Đã chỉ định biên tập viên ID: ${editorId}`,
-      timestamp: new Date()
-    });
-    await article.save();
+    // article.internalNotes.push({
+    //   userId: req.user._id,
+    //   note: `Đã chỉ định biên tập viên ID: ${editorId}`,
+    //   timestamp: new Date()
+    // });
+    // await article.save();
     
     res.status(200).json({ 
       success: true, 

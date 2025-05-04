@@ -1,4 +1,5 @@
 import mongoose, {Schema} from 'mongoose';
+import { StatusHistory } from './statusHistory.model.js';
 // import {ArticleAuthor} from './articleAuthor.model.js';
 // import {StatusHistory} from './statusHistory.model.js';
 
@@ -30,7 +31,7 @@ const ArticleSchema = new mongoose.Schema({
     ]
   },
   // Phân loại và ngôn ngữ
-  language: {
+  articleLanguage: {
     type: String,
     required: true,
   },
@@ -203,16 +204,39 @@ ArticleSchema.methods.setEditor = function(userId) {
   return this.save();
 };
 
-ArticleSchema.methods.changeStatus = function(newStatus, userId, reason) {
-  this.status = newStatus;
-  this.statusHistory.push({
-    status: newStatus,
-    changedBy: userId,
-    reason: reason,
-    timestamp: new Date()
-  });
-  
-  return this.save();
+ArticleSchema.methods.changeStatus = async function(newStatus, userId, reason) {
+  try {
+    // Tạo một bản ghi mới cho statusHistory
+    const statusHistory = new StatusHistory({
+      status: newStatus,
+      changedBy: userId,
+      reason: reason,
+      timestamp: new Date()
+    });
+
+    // Lưu statusHistory mới
+    await statusHistory.save();
+
+    // Cập nhật trạng thái và thêm statusHistory vào mảng
+    this.status = newStatus;
+    this.statusHistory.push(statusHistory._id);
+
+    // Cập nhật các ngày tương ứng
+    if (newStatus === 'submitted' && !this.submittedDate) {
+      this.submittedDate = new Date();
+    } else if (newStatus === 'accepted' && !this.acceptedDate) {
+      this.acceptedDate = new Date();
+    } else if (newStatus === 'rejected' && !this.rejectedDate) {
+      this.rejectedDate = new Date();
+    } else if (newStatus === 'published' && !this.publishedDate) {
+      this.publishedDate = new Date();
+    }
+
+    return await this.save();
+  } catch (error) {
+    console.error('Error in changeStatus:', error);
+    throw error;
+  }
 };
 
 ArticleSchema.methods.nextReviewRound = function() {
