@@ -52,35 +52,70 @@ backend/
 └── index.js        # Điểm khởi đầu ứng dụng
 ```
 
-## 🔗 API Endpoints
+## �� API Endpoints
+
+### 🔐 Xác thực
+- `POST /api/auth/signup` - Đăng ký tài khoản mới
+- `POST /api/auth/login` - Đăng nhập
+- `POST /api/auth/logout` - Đăng xuất
+- `POST /api/auth/verify-email` - Xác thực email
+- `POST /api/auth/resend-verification` - Gửi lại email xác thực
+- `POST /api/auth/forgot-password` - Quên mật khẩu
+- `POST /api/auth/reset-password/:token` - Đặt lại mật khẩu
+- `GET /api/auth/check` - Kiểm tra trạng thái đăng nhập
+- `PUT /api/auth/change-password` - Thay đổi mật khẩu
+
+### 👤 Hồ sơ người dùng
+- `GET /api/profile` - Lấy thông tin hồ sơ
+- `PUT /api/profile/update-profile` - Cập nhật hồ sơ
 
 ### 📄 Quản lý bài báo
-- `GET /api/articles` - Lấy danh sách bài báo
-- `POST /api/articles` - Tạo bài báo mới
+- `GET /api/articles` - Lấy danh sách bài báo (phân trang)
+- `GET /api/articles/stats` - Lấy thống kê bài báo
 - `GET /api/articles/:id` - Lấy chi tiết bài báo
-- `PUT /api/articles/:id` - Cập nhật bài báo
-- `DELETE /api/articles/:id` - Xóa bài báo
+- `POST /api/articles` - Tạo bài báo mới (yêu cầu xác thực)
+- `PUT /api/articles/:id/update` - Cập nhật bài báo (yêu cầu editor/admin)
+- `PUT /api/articles/:id/assign-editor` - Chỉ định biên tập viên (yêu cầu editor/admin)
+- `PUT /api/articles/:id/publish` - Xuất bản bài báo (yêu cầu editor/admin)
+- `PATCH /api/articles/:id/status` - Thay đổi trạng thái bài báo (yêu cầu editor/admin)
+- `DELETE /api/articles/:id` - Xóa bài báo (yêu cầu xác thực)
 
-### 🧑‍💼 Quản lý tác giả
-- `GET /api/article-authors` - Lấy danh sách tác giả
-- `POST /api/article-authors` - Tạo tác giả mới
-- `GET /api/article-authors/:id` - Lấy chi tiết tác giả
-- `PUT /api/article-authors/:id` - Cập nhật tác giả
-- `DELETE /api/article-authors/:id` - Xóa tác giả
+### 📎 Quản lý file bài báo
+- `POST /api/article-files/:articleId` - Tải lên file bài báo (yêu cầu xác thực)
+- `GET /api/article-files/:articleId` - Lấy danh sách file bài báo (yêu cầu xác thực)
+- `GET /api/article-files/:fileId/content` - Lấy nội dung file (yêu cầu xác thực)
+- `DELETE /api/article-files/:fileId` - Xóa file (yêu cầu admin/editor/author)
+- `PATCH /api/article-files/:fileId/status` - Cập nhật trạng thái file (yêu cầu admin/editor/author)
+
+### 🧑‍💼 Quản lý tác giả bài báo
+- `GET /api/article-authors` - Lấy danh sách tác giả (yêu cầu xác thực)
+- `GET /api/article-authors/:id` - Lấy chi tiết tác giả (yêu cầu xác thực)
+- `POST /api/article-authors` - Tạo tác giả mới (yêu cầu admin/editor/author)
+- `PUT /api/article-authors/:id` - Cập nhật tác giả (yêu cầu admin/editor/author)
+- `DELETE /api/article-authors/:id` - Xóa tác giả (yêu cầu admin/editor)
+- `GET /api/article-authors/articles/:articleId/authors` - Lấy danh sách tác giả của bài báo
 
 ### 🧾 Quản lý phản biện
-- `GET /api/reviews` - Lấy danh sách phản biện
-- `POST /api/reviews` - Mời một phản biện
-- `POST /api/reviews/multiple` - Mời nhiều phản biện cùng lúc
-- `GET /api/reviews/:id` - Lấy chi tiết phản biện
-- `PUT /api/reviews/:id` - Cập nhật phản biện
-- `DELETE /api/reviews/:id` - Xóa phản biện
+- `GET /api/reviews` - Lấy danh sách phản biện (yêu cầu admin/editor)
+- `POST /api/reviews` - Mời một phản biện (yêu cầu admin/editor)
+- `POST /api/reviews/multiple` - Mời nhiều phản biện (yêu cầu admin/editor)
+- `GET /api/reviews/:id` - Lấy chi tiết phản biện (yêu cầu admin/editor/reviewer)
+- `PUT /api/reviews/:id` - Cập nhật phản biện (yêu cầu admin/editor)
+- `DELETE /api/reviews/:id` - Xóa phản biện (yêu cầu admin/editor)
 
 ### Hành động phản biện
-- `POST /api/reviews/:id/accept` - Chấp nhận lời mời phản biện
-- `POST /api/reviews/:id/decline` - Từ chối lời mời phản biện
-- `POST /api/reviews/:id/complete` - Hoàn thành phản biện
-- `POST /api/reviews/:id/reminder` - Gửi nhắc nhở phản biện
+- `POST /api/reviews/:id/accept` - Chấp nhận lời mời phản biện (yêu cầu reviewer)
+- `POST /api/reviews/:id/decline` - Từ chối lời mời phản biện (yêu cầu reviewer)
+- `POST /api/reviews/:id/complete` - Hoàn thành phản biện (yêu cầu reviewer)
+- `POST /api/reviews/:id/reminder` - Gửi nhắc nhở phản biện (yêu cầu admin/editor)
+
+### 📊 Quản lý lịch sử trạng thái
+- `GET /api/status-history` - Lấy danh sách lịch sử trạng thái (yêu cầu admin/editor)
+- `POST /api/status-history` - Tạo lịch sử trạng thái mới (yêu cầu admin/editor)
+- `GET /api/status-history/:id` - Lấy chi tiết lịch sử trạng thái (yêu cầu admin/editor)
+- `PUT /api/status-history/:id` - Cập nhật lịch sử trạng thái (yêu cầu admin)
+- `DELETE /api/status-history/:id` - Xóa lịch sử trạng thái (yêu cầu admin)
+- `GET /api/status-history/articles/:articleId/status-history` - Lấy lịch sử trạng thái của bài báo (yêu cầu admin/editor)
 
 ## 🔐 Xác thực và Phân quyền
 API sử dụng JWT (JSON Web Token) để xác thực. Các role được hỗ trợ:
@@ -88,6 +123,7 @@ API sử dụng JWT (JSON Web Token) để xác thực. Các role được hỗ 
 - `editor`: Biên tập viên
 - `reviewer`: Phản biện
 - `author`: Tác giả
+- `user`: Người dùng thông thường
 
 ## 🌟Các tính năng chính
 1. Quản lý bài báo khoa học
