@@ -562,3 +562,23 @@ export const changePassword = async (req, res) => {
     });
   }
 };
+
+export const getUsers = async (req, res) => {
+  try {
+    // Get all users but exclude sensitive information
+    const users = await User.find({})
+      .select('-password -verificationToken -verificationTokenExpiresAt -resetPasswordToken -resetPasswordExpiresAt')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      data: users
+    });
+  } catch (error) {
+    console.error("Error in getUsers:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching users"
+    });
+  }
+};

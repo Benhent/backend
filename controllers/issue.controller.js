@@ -213,7 +213,7 @@ export const deleteIssue = async (req, res) => {
     }
 
     // Xóa số báo
-    await issue.remove();
+    await Issue.findByIdAndDelete(id);
 
     res.status(200).json({ 
       success: true, 

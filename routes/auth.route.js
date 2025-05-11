@@ -9,9 +9,11 @@ import {
   resetPassword,
   checkAuth,
   checkEmailExists,
-  changePassword
+  changePassword,
+  getUsers
 } from '../controllers/auth.controller.js';
 import {verifyToken} from '../middlewares/verifyToken.js';
+import { authorizeRoles } from '../middlewares/isAdmin.js';
 
 const router = express.Router();
 
@@ -29,5 +31,5 @@ router.post('/logout', logout);
 router.get('/check', checkAuth);
 router.post('/check-email', checkEmailExists);
 router.put('/change-password', changePassword);
-
+router.get('/users', authorizeRoles('admin'), getUsers);
 export default router;
