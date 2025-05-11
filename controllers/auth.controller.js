@@ -447,6 +447,52 @@ export const checkAuth = async (req, res) => {
   }
 };
 
+export const checkEmailExists = async (req, res) => {
+  try {
+    // Check if req.body exists
+    if (!req.body || typeof req.body !== 'object') {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid request body"
+      });
+    }
+
+    const { email } = req.body;
+
+    // Input validation
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required"
+      });
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email format"
+      });
+    }
+
+    // Check if user with this email exists
+    const existingUser = await User.findOne({ email });
+
+    // Return response without revealing too much information for security
+    res.status(200).json({
+      success: true,
+      exists: !!existingUser
+    });
+  } catch (error) {
+    console.error("Error in checkEmailExists:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while checking email"
+    });
+  }
+};
+
 export const changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword, confirmPassword } = req.body;

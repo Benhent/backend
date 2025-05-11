@@ -173,8 +173,12 @@ export const deleteArticleAuthor = async (req, res) => {
       });
     }
 
-    await articleAuthor.remove();
-
+    await Article.findByIdAndUpdate(articleAuthor.articleId, {
+      $pull: { authors: articleAuthor._id }
+    });
+    
+    await ArticleAuthor.findByIdAndDelete(req.params.id);
+    
     res.status(200).json({
       success: true,
       message: 'Xóa tác giả bài báo thành công'

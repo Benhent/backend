@@ -8,6 +8,7 @@ import {
   forgotPassword,
   resetPassword,
   checkAuth,
+  checkEmailExists,
   changePassword
 } from '../controllers/auth.controller.js';
 import {verifyToken} from '../middlewares/verifyToken.js';
@@ -26,6 +27,7 @@ router.post('/reset-password/:token', resetPassword);
 router.use(verifyToken); // Apply verifyToken middleware to all routes below
 router.post('/logout', logout);
 router.get('/check', checkAuth);
+router.post('/check-email', checkEmailExists);
 router.put('/change-password', changePassword);
 
 export default router;
