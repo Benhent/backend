@@ -13,14 +13,14 @@ import {authorizeRoles} from '../../middlewares/isAdmin.js';
 const router = express.Router();
 
 // Public routes
-router.get('/articles/:articleId/authors', getArticleAuthorsByArticle);
+router.get('/:articleId/authors', getArticleAuthorsByArticle);
 
 
 // Protected routes
-router.post('/article-authors', verifyToken, authorizeRoles('admin', 'editor', 'author'), createArticleAuthor);
-router.get('/article-authors', verifyToken, getAllArticleAuthors);
-router.get('/article-authors/:id', verifyToken, getArticleAuthor);
-router.put('/article-authors/:id', verifyToken, authorizeRoles('admin', 'editor', 'author'), updateArticleAuthor);
-router.delete('/article-authors/:id', verifyToken, authorizeRoles('admin', 'editor'), deleteArticleAuthor);
+router.post('/', verifyToken, authorizeRoles('admin', 'editor', 'author'), createArticleAuthor);
+router.get('/', verifyToken, getAllArticleAuthors);
+router.get('/:id', verifyToken, getArticleAuthor);
+router.put('/:id', verifyToken, authorizeRoles('admin', 'editor', 'author'), updateArticleAuthor);
+router.delete('/:id', verifyToken, authorizeRoles('admin', 'editor'), deleteArticleAuthor);
 
 export default router; 

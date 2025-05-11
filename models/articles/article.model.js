@@ -19,6 +19,14 @@ const ArticleSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  thumbnail: {
+    type: String,
+  },
+  articleFile: {
+    type: Schema.Types.ObjectId,
+    ref: 'ArticleFile',
+    required: true
+  },
   abstract: {
     type: String,
     required: true

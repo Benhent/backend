@@ -27,6 +27,7 @@ export const getArticles = async (req, res) => {
       .populate('field', 'name')
       .populate('submitterId', 'fullName email')
       .populate('editorId', 'fullName email')
+      .populate('articleFile')
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
@@ -60,6 +61,7 @@ export const getArticleById = async (req, res) => {
       .populate('secondaryFields', 'name')
       .populate('submitterId', 'fullName email institution country')
       .populate('editorId', 'fullName email')
+      .populate('articleFile')
       .populate({
         path: 'authors.userId',
         select: 'fullName email institution country'
@@ -87,6 +89,7 @@ export const createArticle = async (req, res) => {
       titlePrefix,
       title,
       subtitle,
+      thumbnail,
       abstract,
       keywords,
       articleLanguage,
@@ -114,6 +117,7 @@ export const createArticle = async (req, res) => {
       titlePrefix,
       title,
       subtitle,
+      thumbnail,
       abstract,
       keywords: Array.isArray(keywords) ? keywords : keywords.split(',').map(k => k.trim()),
       articleLanguage,
